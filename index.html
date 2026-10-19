@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Info Tool</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Inter & JetBrains Mono for hacker aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d10',
+                        cardBg: '#11181d',
+                        inputBg: '#0c1115',
+                        neonGreen: '#00f076',
+                        neonGreenHover: '#00d668',
+                        textMuted: '#6c7a89',
+                        borderColor: '#1e2932',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #080c0f;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 240, 118, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 50% 100%, rgba(0, 240, 118, 0.03) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 240, 118, 0.3);
+        }
+
+        .neon-glow-lg {
+            box-shadow: 0 0 25px rgba(0, 240, 118, 0.4);
+        }
+
+        .neon-border:focus-within {
+            border-color: #00f076;
+            box-shadow: 0 0 12px rgba(0, 240, 118, 0.3);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e2932;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f076;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between antialiased selection:bg-neonGreen selection:text-black">
+
+    <!-- Header -->
+    <header class="w-full border-b border-borderColor/60 bg-darkBg/80 backdrop-blur-md sticky top-0 z-50 px-4 lg:px-12 py-3.5">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <!-- Brand / Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-neonGreen text-black font-bold flex items-center justify-center text-xl font-mono shadow-md shadow-neonGreen/20">
+                    G
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-white leading-snug tracking-wide">Dark Info Tool</h1>
+                    <p class="text-xs text-textMuted font-mono">By Developer Genius Hacker</p>
+                </div>
+            </div>
+
+            <!-- Join Telegram Header Button -->
+            <a href="https://t.me" target="_blank" class="flex items-center gap-2 bg-[#17212b] hover:bg-[#1e2c3a] text-xs font-medium text-white px-4 py-2.5 rounded-lg border border-slate-700/60 transition-all duration-200">
+                <i class="fa-brands font-semibold fa-telegram text-sky-400 text-sm"></i>
+                <span>Join Telegram</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-3xl mx-auto px-4 py-8 flex-1 flex flex-col items-center justify-center">
+
+        <!-- System Status Badge -->
+        <div class="mb-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neonGreen/10 border border-neonGreen/30 text-neonGreen text-xs font-mono tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-neonGreen animate-pulse"></span>
+            <span>SYSTEM ONLINE &ndash; v1.0</span>
+        </div>
+
+        <!-- Main Title & Description -->
+        <div class="text-center mb-8 max-w-xl">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight">
+                Premium Info Lookup
+            </h2>
+            <p class="text-textMuted text-xs sm:text-sm leading-relaxed">
+                Phone numbers, pincodes, YouTube channels, player profiles, aur AI &mdash; sab ek jagah. Fast, clean, no logs.
+            </p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="w-full bg-[#0d1318] p-1.5 rounded-2xl border border-borderColor/80 mb-6 flex flex-wrap gap-1 sm:gap-1.5">
+            <button id="tab-phone" onclick="switchTab('phone')" class="tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 bg-neonGreen text-black font-semibold shadow-sm">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <span>Phone</span>
+            </button>
+            
+            <button id="tab-pincode" onclick="switchTab('pincode')" class="tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 text-textMuted hover:text-white hover:bg-cardBg">
+                <i class="fa-solid fa-location-dot text-red-400"></i>
+                <span>Pincode</span>
+            </button>
+
+            <button id="tab-youtube" onclick="switchTab('youtube')" class="tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 text-textMuted hover:text-white hover:bg-cardBg">
+                <i class="fa-brands fa-youtube text-amber-500"></i>
+                <span>YouTube</span>
+            </button>
+
+            <button id="tab-ffplayer" onclick="switchTab('ffplayer')" class="tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 text-textMuted hover:text-white hover:bg-cardBg">
+                <i class="fa-solid fa-gamepad text-indigo-400"></i>
+                <span>FF Player</span>
+            </button>
+
+            <button id="tab-aichat" onclick="switchTab('aichat')" class="tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 text-textMuted hover:text-white hover:bg-cardBg">
+                <i class="fa-solid fa-robot text-emerald-400"></i>
+                <span>AI Chat</span>
+            </button>
+        </div>
+
+        <!-- Lookup Form Card -->
+        <div class="w-full bg-cardBg/90 backdrop-blur-xl border border-borderColor rounded-2xl p-5 sm:p-6 shadow-2xl relative">
+            
+            <form onsubmit="handleLookup(event)" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                    <label id="input-label" for="lookup-input" class="text-[11px] font-mono tracking-wider font-semibold text-textMuted uppercase">
+                        PHONE NUMBER
+                    </label>
+                    <div class="relative rounded-xl border border-borderColor bg-inputBg transition-all neon-border overflow-hidden">
+                        <input 
+                            type="text" 
+                            id="lookup-input"
+                            placeholder="9876543218" 
+                            required
+                            class="w-full bg-transparent px-4 py-3.5 text-sm font-mono text-white placeholder-slate-600 focus:outline-none"
+                        >
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="submit-btn"
+                    class="w-full mt-1 bg-neonGreen hover:bg-neonGreenHover text-black font-extrabold text-xs tracking-wider uppercase py-3.5 rounded-xl transition-all duration-200 neon-glow active:scale-[0.99] flex items-center justify-center gap-2"
+                >
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>RUN LOOKUP</span>
+                </button>
+            </form>
+
+            <!-- Results Display Box (Hidden by default) -->
+            <div id="results-container" class="hidden mt-6 pt-5 border-t border-borderColor/60">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-mono text-neonGreen flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-[10px]"></i> RESULT FOUND
+                    </span>
+                    <button onclick="copyResults()" class="text-xs text-textMuted hover:text-white flex items-center gap-1 transition">
+                        <i class="fa-regular fa-copy"></i> Copy
+                    </button>
+                </div>
+                <div id="results-content" class="bg-inputBg/80 rounded-xl p-4 font-mono text-xs text-slate-300 border border-borderColor/40 overflow-x-auto leading-relaxed">
+                    <!-- Dynamic details appended here -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-8 text-center text-xs text-textMuted border-t border-borderColor/30 mt-12 bg-darkBg/40">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col items-center gap-4">
+            
+            <p class="font-medium text-slate-400">
+                Built by <span class="text-white font-semibold">Developer Genius Hacker</span> &bull; YouTube Genius Hacker 29
+            </p>
+
+            <!-- Footer Quick Link Buttons -->
+            <div class="flex items-center justify-center gap-3">
+                <a href="https://t.me" target="_blank" class="flex items-center gap-2 bg-[#131b22] hover:bg-[#1a252f] text-slate-300 px-3.5 py-2 rounded-lg border border-borderColor text-xs font-mono transition">
+                    <i class="fa-brands fa-telegram text-sky-400"></i>
+                    <span>Telegram Channel</span>
+                </a>
+                <a href="#" onclick="showApiNotice(event)" class="flex items-center gap-2 bg-[#131b22] hover:bg-[#1a252f] text-slate-300 px-3.5 py-2 rounded-lg border border-borderColor text-xs font-mono transition">
+                    <i class="fa-solid fa-code text-neonGreen"></i>
+                    <span>API Hub</span>
+                </a>
+            </div>
+
+            <p class="font-mono text-[11px] text-slate-600 mt-2">
+                &copy; 2026 Dark Info Tool &ndash; All operations logged anonymously.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast Modal -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-cardBg border border-neonGreen/40 text-white px-4 py-3 rounded-xl text-xs font-mono shadow-xl hidden transition-all duration-300 transform translate-y-2 flex items-center gap-3 z-50">
+        <i class="fa-solid fa-circle-info text-neonGreen text-sm"></i>
+        <span id="toast-msg">Notification message</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Tab configuration database
+        const tabConfigs = {
+            phone: {
+                label: 'PHONE NUMBER',
+                placeholder: '9876543218',
+                btnText: 'RUN LOOKUP',
+                type: 'tel'
+            },
+            pincode: {
+                label: 'PINCODE / ZIP CODE',
+                placeholder: '500001 or 110001',
+                btnText: 'SEARCH LOCATION',
+                type: 'text'
+            },
+            youtube: {
+                label: 'YOUTUBE CHANNEL ID / URL',
+                placeholder: '@GeniusHacker29 or UC...',
+                btnText: 'FETCH CHANNEL INFO',
+                type: 'text'
+            },
+            ffplayer: {
+                label: 'FREE FIRE PLAYER UID',
+                placeholder: '1234567890',
+                btnText: 'GET PLAYER STATS',
+                type: 'text'
+            },
+            aichat: {
+                label: 'AI PROMPT / QUESTION',
+                placeholder: 'Ask anything to Genius AI...',
+                btnText: 'GENERATE RESPONSE',
+                type: 'text'
+            }
+        };
+
+        let currentTab = 'phone';
+
+        // Tab Switching Logic
+        function switchTab(tabKey) {
+            currentTab = tabKey;
+            const config = tabConfigs[tabKey];
+
+            // Reset tab styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 text-textMuted hover:text-white hover:bg-cardBg';
+            });
+
+            // Activate chosen tab
+            const activeTabBtn = document.getElementById(`tab-${tabKey}`);
+            if (activeTabBtn) {
+                activeTabBtn.className = 'tab-btn flex-1 min-w-[90px] py-2.5 px-3 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-2 bg-neonGreen text-black font-semibold shadow-sm';
+            }
+
+            // Update Input details
+            const labelEl = document.getElementById('input-label');
+            const inputEl = document.getElementById('lookup-input');
+            const btnEl = document.getElementById('submit-btn');
+
+            labelEl.textContent = config.label;
+            inputEl.placeholder = config.placeholder;
+            inputEl.type = config.type;
+            inputEl.value = '';
+            
+            btnEl.querySelector('span').textContent = config.btnText;
+
+            // Hide results box
+            document.getElementById('results-container').classList.add('hidden');
+        }
+
+        // Simulating Lookup functionality
+        function handleLookup(e) {
+            e.preventDefault();
+            const inputVal = document.getElementById('lookup-input').value.trim();
+            if (!inputVal) return;
+
+            const resultsContainer = document.getElementById('results-container');
+            const resultsContent = document.getElementById('results-content');
+            const btnEl = document.getElementById('submit-btn');
+
+            // Show loading state
+            btnEl.disabled = true;
+            btnEl.classList.add('opacity-80');
+            btnEl.querySelector('span').textContent = 'SEARCHING...';
+
+            setTimeout(() => {
+                btnEl.disabled = false;
+                btnEl.classList.remove('opacity-80');
+                btnEl.querySelector('span').textContent = tabConfigs[currentTab].btnText;
+
+                // Render dynamic mock output based on active tab
+                resultsContent.innerHTML = generateMockData(currentTab, inputVal);
+                resultsContainer.classList.remove('hidden');
+                
+                showToast('Lookup completed successfully!');
+            }, 800);
+        }
+
+        // Mock response data generator
+        function generateMockData(tab, value) {
+            const timestamp = new Date().toISOString();
+            switch (tab) {
+                case 'phone':
+                    return `
+                        <div class="space-y-1">
+                            <p><span class="text-neonGreen">Status:</span> Active / Found</p>
+                            <p><span class="text-neonGreen">Number:</span> +91 ${value}</p>
+                            <p><span class="text-neonGreen">Carrier:</span> Jio / Airtel Telecom</p>
+                            <p><span class="text-neonGreen">Circle:</span> India</p>
+                            <p><span class="text-neonGreen">Risk Score:</span> Low (0.01)</p>
+                            <p class="text-slate-500 text-[10px] mt-2">Query Time: ${timestamp}</p>
+                        </div>
+                    `;
+                case 'pincode':
+                    return `
+                        <div class="space-y-1">
+                            <p><span class="text-neonGreen">Pincode:</span> ${value}</p>
+                            <p><span class="text-neonGreen">District:</span> Hyderabad / Central</p>
+                            <p><span class="text-neonGreen">State:</span> Telangana</p>
+                            <p><span class="text-neonGreen">Post Offices:</span> GPO, City Division</p>
+                            <p class="text-slate-500 text-[10px] mt-2">Query Time: ${timestamp}</p>
+                        </div>
+                    `;
+                case 'youtube':
+                    return `
+                        <div class="space-y-1">
+                            <p><span class="text-neonGreen">Target:</span> ${value}</p>
+                            <p><span class="text-neonGreen">Channel Name:</span> Genius Hacker Tech</p>
+                            <p><span class="text-neonGreen">Subscribers:</span> 128.5K</p>
+                            <p><span class="text-neonGreen">Total Videos:</span> 342</p>
+                            <p><span class="text-neonGreen">Status:</span> Verified Partner</p>
+                            <p class="text-slate-500 text-[10px] mt-2">Query Time: ${timestamp}</p>
+                        </div>
+                    `;
+                case 'ffplayer':
+                    return `
+                        <div class="space-y-1">
+                            <p><span class="text-neonGreen">UID:</span> ${value}</p>
+                            <p><span class="text-neonGreen">Nickname:</span> Dark_Genius_99</p>
+                            <p><span class="text-neonGreen">Level:</span> 74 (Heroic IV)</p>
+                            <p><span class="text-neonGreen">Region:</span> IND</p>
+                            <p><span class="text-neonGreen">Likes:</span> 14,290</p>
+                            <p class="text-slate-500 text-[10px] mt-2">Query Time: ${timestamp}</p>
+                        </div>
+                    `;
+                case 'aichat':
+                    return `
+                        <div class="space-y-1">
+                            <p class="text-neonGreen font-semibold mb-1">AI Genius Response:</p>
+                            <p class="text-slate-200 italic">"Here is the result for: ${value}. System analyzed the query and returned full database results with zero latency."</p>
+                            <p class="text-slate-500 text-[10px] mt-2">Model: Genius-v1.0-Fast</p>
+                        </div>
+                    `;
+                default:
+                    return `Details fetched for ${value}`;
+            }
+        }
+
+        // Copy Results to Clipboard
+        function copyResults() {
+            const content = document.getElementById('results-content').innerText;
+            if (!content) return;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = content;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast('Result copied to clipboard!');
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.textContent = msg;
+            
+            toast.classList.remove('hidden', 'translate-y-2');
+            setTimeout(() => {
+                toast.classList.add('hidden', 'translate-y-2');
+            }, 3000);
+        }
+
+        function showApiNotice(e) {
+            e.preventDefault();
+            showToast('API Hub integration coming in v2.0!');
+        }
+    </script>
+</body>
+</html>
+
